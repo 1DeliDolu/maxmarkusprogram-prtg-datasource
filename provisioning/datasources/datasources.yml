@@ -9,6 +9,9 @@ datasources:
     version: 1
     editable: true
     jsonData:
-      path: '/resources'
+      hostname: "your-prtg-server"
+      username: "your-username"
+      cacheTimeout: 300
+      maxDataPoints: 100
     secureJsonData:
-      apiKey: 'api-key'
+      passhash: "your-passhash"

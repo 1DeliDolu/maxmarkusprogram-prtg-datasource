@@ -4,6 +4,7 @@
   "name": "Prtg",
   "id": "maxmarkusprogram-prtg-datasource",
   "metrics": true,
+  "annotations": true,
   "info": {
     "description": "PRTG Network Monitor data source",
     "author": {
@@ -16,7 +17,6 @@
       "small": "img/logo.svg",
       "large": "img/logo.svg"
     },
-    "annotations": true,
     "links": [
       {
         "name": "GitHub",
@@ -40,13 +40,11 @@
     {
       "path": "hostname",
       "url": "https://{{ .JsonData.hostname }}/api/",
-      "body": [
+      "body": 
         {
       "username": "{{ .JsonData.username }}",
       "passhash": "{{ .SecureJsonData.passhash }}"
         }
-        
-      ]
     }
   ]
 }
