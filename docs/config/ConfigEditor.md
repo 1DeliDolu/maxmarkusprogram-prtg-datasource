@@ -6,6 +6,8 @@
 
 ![config](../img/configAnmelden.png)
 
+![1737540302894](image/ConfigEditor/1737540302894.png)
+
 ## Sign in
 
  ![anmeldungErfolgreich](../img/anmeldungsErfolgreich.png)

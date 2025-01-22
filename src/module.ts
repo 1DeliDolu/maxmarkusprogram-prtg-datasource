@@ -1,9 +1,9 @@
 import { DataSourcePlugin } from '@grafana/data';
-import { DataSource } from './datasource';
+import { PRTGDataSource } from './datasource';
 import { ConfigEditor } from './components/ConfigEditor';
 import { QueryEditor } from './components/QueryEditor';
-import { MyQuery, MyDataSourceOptions } from './types';
+import { PRTGQuery, PRTGDataSourceConfig } from './types';
 
-export const plugin = new DataSourcePlugin<DataSource, MyQuery, MyDataSourceOptions>(DataSource)
+export const plugin = new DataSourcePlugin<PRTGDataSource, PRTGQuery, PRTGDataSourceConfig>(PRTGDataSource)
   .setConfigEditor(ConfigEditor)
   .setQueryEditor(QueryEditor);
