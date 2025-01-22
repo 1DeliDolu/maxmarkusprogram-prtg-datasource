@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: 'PRTG-Dashboards'
+    type: file
+    updateIntervalSeconds: 30
+    options:
+      path: /d:/APP/Prtg/maxmarkusprogram-prtg-datasource/provisioning/dashboards
+      foldersFromFilesStructure: true

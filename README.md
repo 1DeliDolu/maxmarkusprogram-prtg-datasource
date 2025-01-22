@@ -97,6 +97,23 @@ To trigger the workflow we need to push a version tag to github. This can be ach
 1. Run `npm version <major|minor|patch>`
 2. Run `git push origin main --follow-tags`
 
+## Dashboard Provisioning
+
+### Reusable Dashboard URLs
+
+When provisioning dashboards, the system uses dashboard UIDs to maintain stable URLs across different Grafana instances. Key points:
+
+- Dashboard UIDs in JSON files are preserved during provisioning
+- URLs remain stable when migrating between Grafana instances
+- Avoid reusing the same UID within an installation
+- Avoid using duplicate dashboard titles within the same folder
+
+**Note:** The `keepProvisionedDashboardUids` option in `dashboards.yml` ensures URL stability during provisioning.
+
+### Folder Structure
+
+The plugin supports automatic folder creation based on filesystem structure. Example structure:
+
 ## Learn more
 
 Below you can find source code for existing app plugins and other related documentation.

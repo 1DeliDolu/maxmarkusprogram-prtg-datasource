@@ -1,0 +1,11 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "title": "PRTG Application Resources",
+  "uid": "maxmarkusprogram-prtg-app-resources",
+  "tags": ["prtg", "application", "resources"],
+  "version": 1,
+  "panels": []
+}

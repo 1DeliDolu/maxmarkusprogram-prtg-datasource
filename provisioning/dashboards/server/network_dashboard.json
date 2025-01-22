@@ -1,0 +1,10 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "title": "Network Status",
+  "uid": "prtg-server-network",
+  "version": 1,
+  "panels": []
+}

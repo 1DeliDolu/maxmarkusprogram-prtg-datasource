@@ -1,0 +1,19 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "title": "PRTG Server Overview",
+  "uid": "prtg-server-common",
+  "version": 1,
+  "tags": ["prtg", "server"],
+  "panels": [],
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timezone": ""
+}
