@@ -80,7 +80,6 @@
 
 ![1737447813211](image/QueryEditor/1737447813211.png)
 
-
 ## Fill opacity
 
 ![1737447936052](image/QueryEditor/1737447936052.png)
@@ -92,3 +91,5 @@
 ## Dashboards 2
 
 ![1737448469409](image/QueryEditor/1737448469409.png)
+
+![1737548334210](image/QueryEditor/1737548334210.png)

@@ -105,6 +105,4 @@ Below you can find source code for existing app plugins and other related docume
 - [`plugin.json` documentation](https://grafana.com/developers/plugin-tools/reference/plugin-json)
 - [How to sign a plugin?](https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin)
 
-
-
-## Show please [docs](./docs/config/ConfigEditor.md) ordner for details
+## [Show please docs ordner for details](./docs/config/ConfigEditor.md)
