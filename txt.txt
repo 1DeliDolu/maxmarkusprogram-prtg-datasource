@@ -1,6 +1,0 @@
-https://codeload.github.com/1DeliDolu/prtg-grafana-datasource/zip/refs/heads/main
-
-
-
-
-glc_eyJvIjoiMTI2NDcwMiIsIm4iOiJwbHVnaW4tc2lnbmluZy1wbHVnaW4tc2lnbmluZy10b2tlbiIsImsiOiJTeTZ1OEEzNVM5OUJTZVhEWktXNjVaNjMiLCJtIjp7InIiOiJ1cyJ9fQ==

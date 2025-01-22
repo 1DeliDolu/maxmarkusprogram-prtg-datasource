@@ -13,7 +13,7 @@ import {
 import { PRTGDataSourceSettings, TestDataSourceResponse } from './types/interface.datasource';
 import { PRTGQuery, PRTGDataSourceConfig, PRTGApiConfig, PRTGAnnotationQuery } from './types';
 import { PRTGQueryItem } from './types/interfaces'; 
-
+//@ts-ignore
 import _ from 'lodash';
 
 import { PRTGApi } from './Api';

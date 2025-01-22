@@ -15,19 +15,16 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
    ```bash
    npm install
    ```
-
 2. Build plugin in development mode and run in watch mode
 
    ```bash
    npm run dev
    ```
-
 3. Build plugin in production mode
 
    ```bash
    npm run build
    ```
-
 4. Run the tests (using Jest)
 
    ```bash
@@ -37,13 +34,11 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
    # Exits after running all the tests
    npm run test:ci
    ```
-
 5. Spin up a Grafana instance and run the plugin inside it (using Docker)
 
    ```bash
    npm run server
    ```
-
 6. Run the E2E tests (using Cypress)
 
    ```bash
@@ -53,7 +48,6 @@ Grafana supports a wide range of data sources, including Prometheus, MySQL, and 
    # Starts the tests
    npm run e2e
    ```
-
 7. Run the linter
 
    ```bash
@@ -110,3 +104,7 @@ Below you can find source code for existing app plugins and other related docume
 - [Basic data source plugin example](https://github.com/grafana/grafana-plugin-examples/tree/master/examples/datasource-basic#readme)
 - [`plugin.json` documentation](https://grafana.com/developers/plugin-tools/reference/plugin-json)
 - [How to sign a plugin?](https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin)
+
+
+
+## Show please [docs](./docs/config/ConfigEditor.md) ordner for details
