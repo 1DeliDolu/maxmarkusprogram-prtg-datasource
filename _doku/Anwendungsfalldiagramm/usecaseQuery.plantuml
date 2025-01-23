@@ -1,0 +1,88 @@
+@startuml Query
+
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+
+actor User
+
+rectangle "PRTG Query System" {
+    package "Query Selection" {
+        usecase "Select Query Type" as queryType
+        usecase "Enter Raw Query" as rawQuery
+        usecase "Enter Text Query" as textQuery
+        usecase "Select Metrics" as metrics
+    }
+
+    package "Data Navigation" {
+        usecase "Select Group" as group
+        usecase "Select Device" as device
+        usecase "Select Sensor" as sensor
+    }
+
+    package "Raw Data View" {
+        usecase "Raw Active Status" as rawActive
+        usecase "Raw Messages" as rawMessages
+        usecase "Raw Status" as rawStatus
+        usecase "Raw Priority" as rawPriority
+        usecase "Raw Tags" as rawTags
+    }
+
+    package "Standard Data View" {
+        usecase "View Active Status" as active
+        usecase "View Messages" as messages
+        usecase "Check Status" as status
+        usecase "View Priority" as priority
+        usecase "View Tags" as tags
+    }
+
+    package "Time Series Data" {
+        usecase "Select Channel" as channel
+        usecase "Select Time Range" as timeRange
+        usecase "View Historical Graph" as histGraph
+    }
+}
+
+User --> queryType
+queryType --> rawQuery
+queryType --> textQuery
+queryType --> metrics
+
+' Common Selection Path
+rawQuery --> group
+textQuery --> group
+metrics --> group
+group --> device
+device --> sensor
+
+' Raw Query Path
+group .right.> rawActive : if raw query
+group .right.> rawMessages : if raw query
+group .right.> rawStatus : if raw query
+group .right.> rawPriority : if raw query
+group .right.> rawTags : if raw query
+
+sensor .right.> rawActive : if raw query
+sensor .right.> rawMessages : if raw query
+sensor .right.> rawStatus : if raw query
+sensor .right.> rawPriority : if raw query
+sensor .right.> rawTags : if raw query
+
+' Text Query Path
+group .left.> active : if text query
+group .left.> messages : if text query
+group .left.> status : if text query
+group .left.> priority : if text query
+group .left.> tags : if text query
+
+sensor .left.> active : if text query
+sensor .left.> messages : if text query
+sensor .left.> status : if text query
+sensor .left.> priority : if text query
+sensor .left.> tags : if text query
+
+' Metrics Path
+sensor --> channel : if metrics query
+channel --> timeRange
+timeRange --> histGraph
+
+@enduml

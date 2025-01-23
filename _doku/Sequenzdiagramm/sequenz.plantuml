@@ -1,0 +1,54 @@
+@startuml PRTG API Interaction Flow
+
+actor User
+participant Grafana
+participant "PRTG Plugin" as Plugin
+participant "PRTG API" as API
+database "PRTG Server" as Server
+
+== Initial Setup ==
+User -> Grafana: Configure PRTG datasource
+Grafana -> Plugin: Initialize connection
+Plugin -> API: Validate credentials\n(username + passhash)
+API -> Server: Authenticate
+Server --> API: Auth response
+API --> Plugin: Connection status
+Plugin --> Grafana: Setup result
+Grafana --> User: Configuration feedback
+
+== Data Query Flow ==
+User -> Grafana: Create dashboard query
+Grafana -> Plugin: Execute query
+
+alt Metrics Query
+    Plugin -> API: GET /api/historicdata.json\n(sensors data)
+    API -> Server: Fetch sensor metrics
+    Server --> API: Raw sensor data
+    API --> Plugin: Formatted metrics
+    Plugin -> Plugin: Transform data
+    Plugin --> Grafana: Display metrics
+
+else Historical Data Query
+    Plugin -> API: GET /api/historicdata.json
+    API -> Server: Fetch historical data
+    Server --> API: Historical values
+    API --> Plugin: Time series data
+    Plugin -> Plugin: Format time series
+    Plugin --> Grafana: Display graph
+
+else Status Query
+    Plugin -> API: GET /api/status.json
+    API -> Server: Fetch status
+    Server --> API: Status data
+    API --> Plugin: Status information
+    Plugin --> Grafana: Display status
+end
+
+== Error Handling ==
+Plugin -> API: Request fails
+API --> Plugin: Error response
+Plugin -> Plugin: Format error
+Plugin --> Grafana: Show error message
+Grafana --> User: Display error
+
+@enduml

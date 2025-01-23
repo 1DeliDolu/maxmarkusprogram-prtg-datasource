@@ -1,0 +1,67 @@
+@startuml Config
+left to right direction
+skinparam packageStyle rectangle
+
+actor User as u
+actor System as s
+
+package "User Interface" {
+    package "Connection Settings" {
+        usecase "Enter Hostname" as UC1
+        usecase "Enter Username" as UC2
+        usecase "Enter Password Hash" as UC3
+    }
+    
+    package "Performance Settings" {
+        usecase "Set Cache Timeout" as UC4
+    }
+}
+
+package "System Validation" {
+    package "Input Validation" {
+        usecase "Validate Hostname" as VS1
+        usecase "Validate Credentials" as VS2
+        usecase "Check Cache Settings" as VS3
+    }
+    
+    package "Connection Management" {
+        usecase "Check Version Compatibility" as VS4
+        usecase "Test Connection" as VS5
+    }
+}
+
+' User connections
+u --> UC1
+u --> UC2
+u --> UC3
+u --> UC4
+
+' System validations
+s --> VS1
+s --> VS2
+s --> VS3
+s --> VS4
+s --> VS5
+
+'Validation flows
+UC1 ..> VS1
+UC2 ..> VS2
+UC3 ..> VS2
+UC4 ..> VS3
+VS1 ..> VS5
+VS2 ..> VS5
+VS3 ..> VS4
+
+note right of VS5
+    System performs automatic
+    connection test after
+    all validations
+end note
+
+note right of VS4
+    System checks version
+    compatibility before
+    establishing connection
+end note
+
+@enduml
