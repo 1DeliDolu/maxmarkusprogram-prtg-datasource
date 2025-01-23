@@ -10,7 +10,7 @@
     "author": {
       "name": "Maxmarkusprogram",
       "email": "mustafa.ozdemir1408@gmail.com", 
-      "url": "https://github.com/1DeliDolu/prtg-grafana-datasource.git"
+      "url": "https://github.com/1DeliDolu/maxmarkusprogram-prtg-datasource.git"
     },
     "keywords": ["datasource,prtg"],
     "logos": {
@@ -20,7 +20,7 @@
     "links": [
       {
         "name": "GitHub",
-        "url": "https://github.com/1DeliDolu/prtg-grafana-datasource"
+        "url": "https://github.com/1DeliDolu/maxmarkusprogram-prtg-datasource.git"
       }
     ],
     "screenshots": [
