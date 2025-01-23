@@ -1,0 +1,500 @@
+@startuml PRTG Data Source - Complete Architecture
+
+' Style settings
+skinparam classAttributeIconSize 0
+skinparam backgroundColor white
+skinparam roundcorner 5
+skinparam package {
+    BackgroundColor white
+    BorderColor black
+}
+
+' Custom styling for better visualization
+skinparam class {
+    BackgroundColor<<API>> LightBlue
+    BackgroundColor<<Core>> LightGreen
+    BackgroundColor<<UI>> LightYellow
+    BorderColor Black
+    ArrowColor #333333
+    FontName Arial
+}
+
+' Add stereotypes for better visualization
+class PRTGDataSource <<Core>>
+class PRTGApi <<API>>
+class QueryEditorController <<UI>>
+class DataSourcePlugin <<Core>>
+
+' Add notes for documentation
+note right of PRTGDataSource
+    Main data source class that handles
+    all communication with PRTG server
+end note
+
+note right of PRTGApi
+    Handles all API requests to PRTG
+    and data transformation
+end note
+
+note right of QueryEditorController
+    Controls the query editor UI
+    and handles user interactions
+end note
+
+' Add legend
+legend right
+|Color|Type|
+|<#LightBlue>|API Components|
+|<#LightGreen>|Core Components|
+|<#LightYellow>|UI Components|
+endlegend
+
+' Packages for better organization
+package "Core" {
+    class PRTGDataSource {
+        {static} +pluginId: string
+        -api: PRTGApi
+        -templateSrv: TemplateSrv
+        -baseUrl: string
+        -username: string
+        -passhash: string
+        +constructor(instanceSettings: PRTGDataSourceSettings)
+        +query(options: DataQueryRequest): Promise<DataQueryResponse>
+        +testDatasource(): Promise<TestDataSourceResponse>
+    }
+
+    class PRTGApi {
+        -config: PRTGApiConfig
+        -cacheService: CacheService
+        -tzAutoAdjustValue: number
+        +getVersion(): Promise<string>
+        +performGroupSuggestQuery(): Promise<PRTGGroup[]>
+        +performDeviceSuggestQuery(): Promise<PRTGDevice[]>
+        +performSensorSuggestQuery(): Promise<PRTGSensor[]>
+        +performChannelSuggestQuery(): Promise<PRTGChannel[]>
+        +testAuth(): Promise<boolean>
+    }
+
+    class CacheService {
+        -cache: Map<string, CacheItem<any>>
+        -defaultTimeout: number
+        +has(key: string): boolean
+        +get<T>(key: string): T | null
+        +set<T>(key: string, data: T): void
+        +clear(): void
+    }
+}
+
+package "Configuration" {
+    class PRTGDataSourceConfig {
+        +apiUrl: string
+        +username: string
+        +passhash: string
+        +cacheTimeout: number
+        +tzAutoAdjust: boolean
+    }
+
+    class PRTGQueryOptions {
+        +mode: PRTGEditorMode
+        +includeGroupName: boolean
+        +includeSensorName: boolean
+        +includeDeviceName: boolean
+        +target: string
+    }
+
+    interface PRTGApiConfig {
+        +baseUrl: string
+        +username: string
+        +passwordHash: string
+        +cacheTimeout?: number
+        +enableTimeZoneAdjust?: boolean
+        +maxRetries?: number
+        +retryDelay?: number
+        +apiKey?: string
+    }
+}
+
+package "Editor" {
+    class QueryEditorController {
+        -target: PRTGQuery
+        -datasource: PRTGDataSource
+        -templateSrv: TemplateSrv
+        +selectGroup(): void
+        +selectDevice(): void
+        +selectSensor(): void
+        +updateChannelList(): Promise<void>
+        +refreshSelectionLists(): Promise<void>
+    }
+}
+
+package "Models" {
+    interface PRTGGroup {
+        +group: string
+        +objid: number
+        +status: string
+    }
+
+    interface PRTGDevice {
+        +device: string
+        +objid: number
+        +group: string
+    }
+
+    interface PRTGSensor {
+        +sensor: string
+        +objid: number
+        +device: string
+    }
+
+    interface PRTGChannel {
+        +channel: string
+        +objid: number
+        +value: number
+    }
+}
+
+package "Types & Interfaces" {
+    interface PRTGQuery extends DataQuery {
+        +refId: string
+        +queryType: string
+        +sensorId: number
+        +channelSelection: object
+        +options: PRTGQueryOptions
+        +validationErrors?: string[]
+    }
+
+    interface MetricFindValue {
+        +text: string
+        +value?: string
+        +expandable?: boolean
+    }
+
+    interface DataSourceResponse {
+        +datapoints?: DataPoint[]
+        +sensors?: PRTGSensorData[]
+        +messages?: PRTGMessage[]
+        +Version?: string
+    }
+
+    interface PRTGSensorData {
+        +objid: number
+        +sensor: string
+        +device: string
+        +lastvalue: string
+        +status: string
+    }
+
+    interface PRTGMessage {
+        +datetime: string
+        +message: string
+        +status: string
+        +type?: string
+        +parent?: string
+    }
+
+    interface PRTGAnnotationEvent {
+        +time: number
+        +title: string
+        +text: string
+        +tags?: string[]
+    }
+}
+
+package "Error Handling" {
+    class PRTGError extends Error {
+        +name: string
+        +message: string
+        +stack?: string
+        +static fromAxiosError(error: AxiosError): PRTGError
+    }
+}
+
+package "API Types" {
+    interface PRTGHistDataResponse {
+        +histdata: Map<string, HistDataItem>
+    }
+
+    interface HistDataItem {
+        +item: PRTGHistDataItem[]
+    }
+
+    interface PRTGHistDataItem {
+        +datetime_raw: number
+        +value_raw: ValueRaw
+        +status_raw?: number
+    }
+
+    interface ValueRaw {
+        +text: string
+        +channel: string
+    }
+
+    interface PRTGHistoryResult {
+        +sensor: number
+        +channel: string
+        +datetime: Date
+        +value: number
+        +status?: string
+    }
+
+    interface PRTGHistoricalResponse {
+        +'prtg-version': string
+        +treesize: number
+        +histdata: Array<HistDataEntry>
+    }
+
+    interface HistDataEntry {
+        +datetime: string
+        +[key: string]: string | number
+    }
+}
+
+' Add new package for Services and Utilities
+package "Services & Utilities" {
+    class DataSourcePlugin<PRTGDataSource, PRTGQuery, PRTGDataSourceConfig> {
+        +setConfigEditor(editor: ComponentType): this
+        +setQueryEditor(editor: ComponentType): this
+    }
+
+    interface TemplateSrv {
+        +getVariables(): any[]
+        +replace(target: string, scopedVars?: ScopedVars, format?: string | Function): string
+    }
+
+    interface QueryEditor {
+        +query: PRTGQuery
+        +onChange: (value: PRTGQuery) => void
+        +onRunQuery: () => void
+    }
+}
+
+package "Testing" {
+    interface TestDataSourceResponse {
+        +status: 'success' | 'error'
+        +message: string
+        +details?: {
+            message?: string
+            verboseMessage?: string
+        }
+    }
+}
+
+' Data Components (moved outside package)
+interface DataPoint {
+    +Time: number
+    +Value: number
+}
+
+interface ValueData {
+    +DateTime: string
+    +Value: string | number
+    +Value_raw?: string | number
+}
+
+interface PRTGSeries {
+    +Time: number
+    +Value: number
+    +[key: string]: any
+}
+
+class DataProcessor {
+    +processHistoricalData(data: any[]): DataPoint[]
+    +processSensorData(data: any[]): PRTGSeries[]
+    +processValueData(data: any[]): ValueData[]
+}
+
+' Add relationships for data components
+DataProcessor --> DataPoint : processes
+DataProcessor --> PRTGSeries : generates
+DataProcessor --> ValueData : handles
+
+package "Security & Authentication" {
+    interface SecureJsonFields {
+        +passhash?: boolean
+        +apiKey?: boolean
+    }
+
+    interface SecureJsonData {
+        +passhash?: string
+        +apiKey?: string
+    }
+
+    interface MySecureJsonData {
+        +apiKey?: string
+        +passhash?: string
+        +clientId?: string
+        +clientSecret?: string
+    }
+
+    interface PRTGDataSourceSettings {
+        +jsonData: PRTGDataSourceConfig
+        +secureJsonFields?: SecureJsonFields
+        +secureJsonData?: SecureJsonData
+    }
+}
+
+package "React Components" {
+    class QueryEditor <<UI>> {
+        -controller: QueryEditorController
+        -lists: {
+            groups: SelectableValue[]
+            devices: SelectableValue[]
+            sensors: SelectableValue[]
+            channels: SelectableValue[]
+            values: SelectableValue[]
+            properties: SelectableValue[]
+            filterProperties: SelectableValue[]
+        }
+        +refreshLists(): Promise<void>
+        +updateSelectLists(): void
+        +onGroupChange(value: SelectableValue<string>): void
+        +onDeviceChange(value: SelectableValue<string>): void
+        +onSensorChange(value: SelectableValue<string>): void
+        +onChannelChange(value: SelectableValue<string>): void
+        +onValueChange(values: SelectableValue<string>[]): void
+        +onQueryTypeChange(value: SelectableValue<string>): void
+        +render(): ReactElement
+    }
+
+    class ConfigEditor <<UI>> {
+        +onOptionsChange: (options: any) => void
+        +render(): ReactElement
+    }
+
+
+    package "UI Types" {
+        interface SelectableValue<T> {
+            +label?: string
+            +value?: T
+            +description?: string
+            +isDisabled?: boolean
+        }
+
+        interface EditorProps {
+            +query: PRTGQuery
+            +onChange: (value: PRTGQuery) => void
+            +onRunQuery: () => void
+            +datasource: PRTGDataSource
+        }
+    }
+
+    package "Error Services" {
+        class PRTGError extends Error {
+            +message: string
+            +name: string
+            +stack?: string
+            +statusCode?: number
+            +responseText?: string
+            +static fromAxiosError(error: AxiosError): PRTGError
+            +getErrorMessage(): string
+            +toString(): string
+        }
+
+        interface ErrorResponse {
+            +status: number
+            +statusText: string
+            +data?: any
+        }
+
+        class ErrorHandler {
+            +static handleApiError(error: any): PRTGError
+            +static formatErrorMessage(error: any): string
+            +static isAxiosError(error: any): boolean
+        }
+    }
+
+    package "Utils & Helpers" {
+        class Utils {
+            +static isTemplateVariable(str: string): boolean
+            +static isRegex(str: string): boolean
+            +static isNumeric(str: any): boolean
+            +static parseValue(value: string): number
+            +static formatTimestamp(timestamp: number): string
+        }
+
+        interface TimeRange {
+            +from: Date
+            +to: Date
+            +raw: {
+                from: string
+                to: string
+            }
+        }
+    }
+
+    ' Key Relationships
+    PRTGDataSource --> PRTGApi : uses
+    PRTGApi --> CacheService : uses
+    PRTGDataSource --> PRTGDataSourceConfig : configures
+    QueryEditorController --> PRTGDataSource : uses
+    PRTGApi --> PRTGGroup : manages
+    PRTGApi --> PRTGDevice : manages
+    PRTGApi --> PRTGSensor : manages
+    PRTGApi --> PRTGChannel : manages
+
+    ' Add new relationships
+    PRTGDataSource --> PRTGQuery : processes
+    PRTGDataSource --> DataSourceResponse : returns
+    PRTGQuery --> PRTGQueryOptions : configures
+    DataSourceResponse --> PRTGSensorData : contains
+    DataSourceResponse --> PRTGMessage : contains
+    PRTGDataSource --> PRTGAnnotationEvent : generates
+    QueryEditorController --> PRTGQuery : manages
+    QueryEditorController --> MetricFindValue : uses
+    PRTGApi --> PRTGError : throws
+    PRTGApi --> PRTGHistDataResponse : returns
+    PRTGHistDataResponse --> PRTGHistDataItem : contains
+    PRTGApi --> PRTGHistoryResult : processes
+    PRTGApi --> PRTGHistoricalResponse : retrieves
+    PRTGApi ..> PRTGApiConfig : configured by
+    DataSourcePlugin --> PRTGDataSource : creates
+    DataSourcePlugin --> ConfigEditor : uses
+    DataSourcePlugin --> QueryEditor : uses
+    PRTGDataSource --> TemplateSrv : uses
+    QueryEditorController --> TemplateSrv : uses
+    PRTGApi --> DataPoint : processes
+    PRTGDataSource --> TestDataSourceResponse : returns
+    PRTGApi --> ValueData : handles
+    PRTGApi --> PRTGSeries : generates
+    QueryEditorController --> TemplateFilter : uses
+    QueryEditorController --> IScopeDefaults : configures
+
+    ' Add new relationships for security
+    PRTGDataSource --> PRTGDataSourceSettings : configured by
+    PRTGDataSourceSettings --> SecureJsonFields : uses
+    PRTGDataSourceSettings --> SecureJsonData : protects
+    PRTGDataSourceConfig --> MySecureJsonData : secures
+
+    ' Add new relationships for UI components
+    QueryEditor --> QueryEditorController : uses
+    QueryEditor --> SelectableValue : uses
+    QueryEditor ..> EditorProps : implements
+    ConfigEditor ..> PRTGDataSourceConfig : configures
+    QueryEditor --> PRTGDataSource : references
+
+    ' Add inheritance/implementation relationships
+    PRTGHistDataResponse --|> DataSourceResponse
+    PRTGSeries --|> DataPoint
+
+    ' Hierarchy
+    PRTGGroup "1" *-- "many" PRTGDevice
+    PRTGDevice "1" *-- "many" PRTGSensor
+    PRTGSensor "1" *-- "many" PRTGChannel
+    PRTGHistDataResponse --> HistDataItem : contains
+    HistDataItem --> PRTGHistDataItem : contains
+    PRTGHistDataItem --> ValueRaw : contains
+    PRTGHistoricalResponse --> HistDataEntry : contains
+
+    ' Add new relationships
+    PRTGApi --> ErrorHandler : uses
+    PRTGError ..> ErrorResponse : throws
+    PRTGDataSource --> Utils : uses
+    QueryEditorController --> Utils : uses
+    PRTGApi --> TimeRange : uses
+
+    ' Add relationships for data processing
+    DataProcessor --> DataPoint : processes
+    DataProcessor --> PRTGSeries : generates
+    DataProcessor --> ValueData : handles
+
+@enduml

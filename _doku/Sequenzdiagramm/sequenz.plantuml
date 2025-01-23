@@ -3,16 +3,19 @@
 actor User
 participant Grafana
 participant "PRTG Plugin" as Plugin
+participant "Axios Client" as Axios
 participant "PRTG API" as API
 database "PRTG Server" as Server
 
 == Initial Setup ==
 User -> Grafana: Configure PRTG datasource
 Grafana -> Plugin: Initialize connection
-Plugin -> API: Validate credentials\n(username + passhash)
+Plugin -> Axios: Create Axios instance\nwith base URL & auth
+Axios -> API: Validate credentials\n(username + passhash)
 API -> Server: Authenticate
 Server --> API: Auth response
-API --> Plugin: Connection status
+API --> Axios: Connection status
+Axios --> Plugin: Response data
 Plugin --> Grafana: Setup result
 Grafana --> User: Configuration feedback
 
@@ -21,32 +24,38 @@ User -> Grafana: Create dashboard query
 Grafana -> Plugin: Execute query
 
 alt Metrics Query
-    Plugin -> API: GET /api/historicdata.json\n(sensors data)
+    Plugin -> Axios: axios.get('/api/historicdata.json')\n(sensors data)
+    Axios -> API: HTTP GET request
     API -> Server: Fetch sensor metrics
     Server --> API: Raw sensor data
-    API --> Plugin: Formatted metrics
+    API --> Axios: Response data
+    Axios --> Plugin: Formatted metrics
     Plugin -> Plugin: Transform data
     Plugin --> Grafana: Display metrics
 
 else Historical Data Query
-    Plugin -> API: GET /api/historicdata.json
+    Plugin -> Axios: axios.get('/api/historicdata.json')
+    Axios -> API: HTTP GET request
     API -> Server: Fetch historical data
     Server --> API: Historical values
-    API --> Plugin: Time series data
+    API --> Axios: Response data
+    Axios --> Plugin: Time series data
     Plugin -> Plugin: Format time series
     Plugin --> Grafana: Display graph
 
 else Status Query
-    Plugin -> API: GET /api/status.json
+    Plugin -> Axios: axios.get('/api/status.json')
+    Axios -> API: HTTP GET request
     API -> Server: Fetch status
     Server --> API: Status data
-    API --> Plugin: Status information
+    API --> Axios: Response data
+    Axios --> Plugin: Status information
     Plugin --> Grafana: Display status
 end
 
 == Error Handling ==
-Plugin -> API: Request fails
-API --> Plugin: Error response
+Plugin -> Axios: Request fails
+Axios --> Plugin: Axios error response
 Plugin -> Plugin: Format error
 Plugin --> Grafana: Show error message
 Grafana --> User: Display error

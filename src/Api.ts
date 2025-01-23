@@ -27,7 +27,6 @@ export class PRTGApi {
     this.config = config;
     this.cacheService = new CacheService(config.cacheTimeout || 300);
     this.sensorId = 0;
-
     if (config.enableTimeZoneAdjust) {
       this.initializeTimeZoneOffset();
     }
