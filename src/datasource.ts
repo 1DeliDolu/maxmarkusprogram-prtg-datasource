@@ -1,3 +1,39 @@
+/**
+ * A data source implementation for PRTG Network Monitor integration with Grafana.
+ * This class handles all communication between Grafana and PRTG Network Monitor.
+ * @author Mustafa Özdemir
+ * 
+ * @extends DataSourceApi<PRTGQuery>, PRTGDataSourceConfig>
+ * 
+ * @property {string} pluginId - Unique identifier for the PRTG Grafana datasource plugin
+ * @property {PRTGApi} api - Instance of PRTG API client for making requests
+ * @property {TemplateSrv} templateSrv - Grafana template service for variable interpolation
+ * @property {string} baseUrl - Base URL for the PRTG API endpoints
+ * @property {string} username - Username for PRTG authentication
+ * @property {string} passhash - Password hash for PRTG authentication
+ * 
+ * @remarks
+ * This data source supports:
+ * - Querying PRTG sensors, devices, and groups
+ * - Both raw and text-based data retrieval
+ * - Historical data queries with time range support
+ * - Metric visualization with customizable display options
+ * - Authentication testing and connection validation
+ * - Annotation support for timeline events
+ * 
+ * @example
+ * ```typescript
+ * const settings = {
+ *   jsonData: {
+ *     hostname: 'prtg.example.com',
+ *     username: 'admin',
+ *     passhash: 'hashedpassword'
+ *   }
+ * };
+ * const datasource = new PRTGDataSource(settings);
+ * ```
+ */
+
 import { getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 import {
   DataQueryRequest,
@@ -17,6 +53,7 @@ import { PRTGQueryItem } from './types/interfaces';
 import _ from 'lodash';
 
 import { PRTGApi } from './Api';
+
 
 export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfig> {
   static readonly pluginId = 'prtg-grafana-datasource';
@@ -52,6 +89,17 @@ export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfi
     this.templateSrv = getTemplateSrv();
   }
 
+  /**
+   * Parses and validates a timeout value, ensuring a valid number is returned
+   * @param value - The timeout value to parse, can be a string, number, or undefined
+   * @param defaultValue - The fallback value to use if parsing fails or value is undefined
+   * @returns A valid numeric timeout value, either the parsed input or the default value
+   * 
+   * @example
+   * parseTimeout('300', 1000) // returns 300
+   * parseTimeout(undefined, 1000) // returns 1000
+   * parseTimeout('invalid', 1000) // returns 1000
+   */
   private parseTimeout(value: string | number | undefined, defaultValue: number): number {
     if (typeof value === 'string') {
       const parsed = parseInt(value, 10);
@@ -63,6 +111,19 @@ export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfi
     return defaultValue;
   }
 
+  /**
+   * Converts a PRTG datetime string into a Unix timestamp (milliseconds).
+   * 
+   * @param datetime - PRTG datetime string in format "DD.MM.YYYY HH:mm:ss" or "DD.MM.YYYY"
+   * @returns number - Unix timestamp in milliseconds
+   * 
+   * @example
+   * Returns timestamp for "24.12.2023 15:30:45"
+   * parsePRTGDateTime("24.12.2023 15:30:45")
+   * 
+   * Returns timestamp for "24.12.2023" (time will be set to 00:00:00)
+   * parsePRTGDateTime("24.12.2023")
+   */
   private parsePRTGDateTime(datetime: string): number {
     const [datePart, timePart] = datetime.split(' ');
     const [day, month, year] = datePart.split('.');
@@ -78,6 +139,31 @@ export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfi
     ).getTime();
   }
 
+  /**
+   * Executes queries against the PRTG API based on the provided query options.
+   * Handles different query types including 'text', 'raw', and time series data.
+   * 
+   * @param options - The query request options containing targets and time range
+   * @param options.range - Time range for the query
+   * @param options.targets - Array of query targets containing query configuration
+   * 
+   * @returns Promise<DataQueryResponse> containing:
+   *  - data: Array of DataFrames with query results
+   *  - state: LoadingState indicating query execution status
+   * 
+   * @throws Will return an error state if the query fails
+   * 
+   * @remarks
+   * Supports three main query types:
+   * 1. 'text' - Retrieves text-based information for groups, devices, or sensors
+   * 2. 'raw' - Retrieves raw values for groups, devices, or sensors
+   * 3. Time series - Retrieves historical data for selected sensors and metrics
+   * 
+   * Each query type creates appropriate data frames with:
+   * - Timestamp fields
+   * - Metric values (string or number)
+   * - Proper field configurations and display names
+   */
   async query(options: DataQueryRequest<PRTGQuery>): Promise<DataQueryResponse> {
     const { range } = options;
     const fromTime = range!.from.valueOf();
@@ -388,6 +474,24 @@ export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfi
     }
   }
 
+  /**
+   * Tests the connection to the PRTG server and validates authentication.
+   * 
+   * @async
+   * @returns {Promise<TestDataSourceResponse>} A promise that resolves to a TestDataSourceResponse object
+   * containing the status of the connection test:
+   * - On success: Returns status 'success' with PRTG version info
+   * - On auth failure: Returns status 'error' with authentication error details
+   * - On connection error: Returns status 'error' with connection failure details
+   * 
+   * @throws {Error} If there are connectivity or authentication issues with the PRTG server
+   * 
+   * @example
+   * const response = await datasource.testDatasource();
+   * if (response.status === 'success') {
+   *   console.log('Connected to PRTG successfully');
+   * }
+   */
   async testDatasource(): Promise<TestDataSourceResponse> {
     try {
       // Test API connectivity
@@ -426,6 +530,19 @@ export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfi
     }
   }
 
+  /**
+   * Configuration for PRTG annotation support
+   * @property {Object} annotations - Annotation support configuration object
+   * @property {Function} prepareQuery - Prepares a PRTG query from annotation data
+   * @param {PRTGAnnotationQuery} anno - The annotation query parameters
+   * @returns {PRTGQuery | undefined} Returns a configured PRTG query object or undefined if no sensorId is provided
+   *
+   * The prepareQuery function:
+   * - Validates if annotation has a sensorId
+   * - Sets up default query options
+   * - Configures sensor, group, device and channel selections
+   * - Returns a fully formed PRTGQuery object with all necessary parameters
+   */
   annotations: AnnotationSupport<PRTGQuery> = {
     prepareQuery: (anno: PRTGAnnotationQuery) => {
       if (!anno.annotation.sensorId) {
