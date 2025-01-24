@@ -11,7 +11,6 @@ describe('PRTG Plugin', () => {
 
     it('should be configured with correct components', () => {
         const pluginInstance = plugin as DataSourcePlugin<PRTGDataSource>;
-        
         // Test that the plugin has the required components
         expect(pluginInstance).toHaveProperty('components');
         expect(pluginInstance).toHaveProperty('DataSourceClass');

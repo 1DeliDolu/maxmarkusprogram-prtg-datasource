@@ -82,29 +82,26 @@ export class PRTGApi {
     return this.config.enableTimeZoneAdjust || false;
   }
 
-    /**
+  /**
    * Executes an HTTP GET request to the PRTG API endpoint with authentication.
-   * 
    * @template T - The expected type of the response data
    * @param {string} endpoint - The API endpoint to call (e.g., 'table.json')
    * @param {URLSearchParams | string} [params] - Optional URL parameters to append to the request
    * @returns {Promise<PRTGResponse>} A promise that resolves to the PRTG API response
    * @throws {PRTGError} When the response contains no data, authentication fails, or other API errors occur
-   * 
    * @private
-   * @async
-   * 
+   * @async 
    * @example
    * const response = await executeRequest<SensorData>('table.json', 'content=sensors&columns=name,status');
    */
   private async executeRequest<T>(endpoint: string, params?: URLSearchParams | string): Promise<PRTGResponse> {
     const baseApiUrl = this.baseUrl;
     const fullUrl = baseApiUrl + endpoint;
-  
+
     const authParams = `username=${this.username}&passhash=${this.passwordHash}`;
     const finalParams = params ? `${authParams}&${params}` : authParams;
     const url = `${fullUrl}?${finalParams}`;
-  
+
     try {
       const response = await axios.get(url, {
         headers: {
@@ -112,15 +109,15 @@ export class PRTGApi {
           Accept: 'application/json',
         },
       });
-  
+
       if (!response.data) {
         throw new PRTGError('Response contained no data');
       }
-  
+
       if (endpoint.includes('table.json') && response.data['prtg-version']) {
         return response.data as PRTGResponse;
       }
-  
+
       return this.processResponse<PRTGResponse>(response.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 403) {
@@ -131,14 +128,12 @@ export class PRTGApi {
   }
 
 
-    /**
+  /**
    * Processes and transforms the raw API response into the expected format.
-   * 
    * @template PRTGResponse - The expected response type
    * @param {any} data - Raw response data from the PRTG API
    * @returns {PRTGResponse} Processed response data
    * @throws {Error} When the response contains insufficient monitoring data
-   * 
    * @private
    */
   private processResponse<PRTGResponse>(data: any): PRTGResponse {
@@ -146,14 +141,14 @@ export class PRTGApi {
     if (data && data.Version) {
       return data as PRTGResponse;
     }
-  
+
     if (data['prtg-version']) {
       if (data.groups) {
         return data.groups as PRTGResponse;
       }
       return data as PRTGResponse;
     }
-  
+
     const responseTypes = {
       groups: true,
       devices: true,
@@ -163,26 +158,24 @@ export class PRTGApi {
       sensordata: true,
       messages: true,
     };
-  
+
     for (const type in responseTypes) {
       if (data[type]) {
         return data[type];
       }
     }
-  
+
     if (data === 'Not enough monitoring data') {
       throw new Error(`Not enough monitoring data.`);
     }
-  
+
     return data;
   }
 
-   /**
+  /**
    * Handles errors that occur during API requests.
-   * 
    * @param {any} error - The error object thrown during the request
    * @throws {PRTGError} When the error is an Axios error or an unknown error
-   * 
    * @private
    */
   private handleRequestError(error: any): void {
@@ -207,7 +200,7 @@ export class PRTGApi {
     if (!this.enableTimeZoneAdjust) {
       return;
     }
-  
+
     try {
       const response = await this.executeRequest('table.json?');
       const jsClock = response.jsClock;
@@ -215,7 +208,7 @@ export class PRTGApi {
       this.tzAutoAdjustValue = Math.round(localTs - jsClock) * 1000;
     } catch (error) { }
   }
-  
+
 
   /**
    * Retrieves the version information from the PRTG API.
@@ -264,14 +257,12 @@ export class PRTGApi {
   }
 
 
-   /**
+  /**
    * Sorts an array of items based on a specified field.
-   * 
    * @template SortList - The type of items in the array, extending SortableItem
    * @param {SortList[]} items - The array of items to sort
    * @param {keyof SortList} field - The field to sort the items by
-   * @returns {SortList[]} The sorted array of items
-   * 
+   * @returns {SortList[]} The sorted array of items 
    * @private
    */
   private sortItems<SortList extends SortableItem>(items: SortList[], field: keyof SortList): SortList[] {
@@ -292,7 +283,7 @@ export class PRTGApi {
     'datetime',
   ].join(',');
 
-  
+
   /**
    * Performs a query to fetch and suggest PRTG groups.
    * 
@@ -336,7 +327,7 @@ export class PRTGApi {
   }
 
 
-  
+
   /**
    * Performs a query to suggest PRTG devices, optionally filtered by group.
    * 
@@ -601,18 +592,18 @@ export class PRTGApi {
     if (!queries || queries.length === 0 || !queries[0].sensorId) {
       throw new Error('Invalid query: Missing sensor ID');
     }
-  
+
     const dateFrom = new Date(sdate).getTime() / 1000;
     const dateTo = new Date(edate).getTime() / 1000;
     const hours = (dateTo - dateFrom) / 3600;
-  
+
     const avg: string = _.cond<number, string>([
       [(h: number): boolean => h > 12 && h < 36, (): string => '300'],
       [(h: number): boolean => h > 36 && h < 745, (): string => '3600'],
       [(h: number): boolean => h > 745, (): string => '86400'],
       [_.stubTrue, (): string => '0'],
     ])(hours);
-  
+
     const formatDate = _.memoize((timestamp: number) => {
       const date = new Date(timestamp);
       return `${date.getFullYear()}-${_.padStart(String(date.getMonth() + 1), 2, '0')}-${_.padStart(
@@ -625,14 +616,14 @@ export class PRTGApi {
         '0'
       )}`;
     });
-  
+
     try {
       // Validate sensor ID before making request
       const sensorId = Number(queries[0].sensorId);
       if (isNaN(sensorId)) {
         throw new Error('Invalid sensor ID');
       }
-  
+
       const params = new URLSearchParams();
       params.append('id', sensorId.toString());
       params.append('avg', avg);
@@ -641,18 +632,18 @@ export class PRTGApi {
       params.append('count', '50000');
       params.append('usecaption', '1');
       params.append('columns', 'datetime,value_');
-  
+
       // Only add channel parameter if it's a valid value
       if (queries[0].channelId && queries[0].channelId !== '*') {
         params.append('channel', queries[0].channelId);
       }
-  
+
       const response = await this.executeRequest<PRTGResponse>('historicdata.json', params);
-  
+
       if (!response.histdata || response.histdata.length === 0) {
         throw new Error('No historical data received from PRTG');
       }
-  
+
       return response;
     } catch (error) {
       console.error('Failed to perform historical data query:', error);

@@ -202,7 +202,6 @@ describe('PRTGDataSource', () => {
                     }
                 }]
             };
-
             mockApi.getSensorInfo.mockResolvedValue({
                 datetime: '01.01.2021 00:00:00',
                 status: 'Up',

@@ -44,7 +44,7 @@
  */
 
 import { cloneDeep } from 'lodash';
-import { PRTGQuery, IScopeDefaults, PRTGEditorMode } from './types';
+import { PRTGQuery, ScopeDefaults, PRTGEditorMode } from './types';
 import { isRegex, isNumeric, isTemplateVariable } from './utils';
 import { PRTGDataSource } from './datasource';
 import { PRTGError } from './services/PRTGError';
@@ -75,7 +75,7 @@ export class QueryEditorController {
         filterPropertyList?: Array<{ name: string; visible_name: string; templated?: boolean }>;
     };
 
-    private scopeDefaults: IScopeDefaults = {
+    private scopeDefaults: ScopeDefaults = {
         metric: {
             filterPropertyList: [
                 { name: 'active', visible_name: 'Active' },

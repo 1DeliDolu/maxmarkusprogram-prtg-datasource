@@ -73,7 +73,7 @@ export interface PRTGQuery extends DataQuery {
   channelSelection: { name: string };
   valueSelection?: { name: string };
   sensorId?: number;
-  propertySelection: { name: string } | null; 
+  propertySelection: { name: string } | null;
   filterPropertySelection?: { name: string; }
   columnDefinitions?: string;
   sortCriteria?: string;
@@ -95,7 +95,7 @@ export interface PRTGQuery extends DataQuery {
   transformations: any[];
   options: PRTGQueryOptions;
   validationErrors?: string[];
-  property?: string | number; 
+  property?: string | number;
   metric?: string;
   queryOptions: {
     displayMode: PRTGEditorMode;
@@ -135,7 +135,7 @@ export const DEFAULT_QUERY: Partial<PRTGQuery> = {
   queryText: 'content=sensors&columns=objid,sensor,lastvalue,status,message',
   columnDefinitions: 'objid,sensor,lastvalue,status,message',
   sortCriteria: 'lastvalue',
-  propertySelection: null, 
+  propertySelection: null,
 };
 
 
@@ -196,7 +196,7 @@ export interface ValueData {
 export interface PRTGSensorData {
   objid: number;
   sensor: string;
-  device: string;   
+  device: string;
   lastvalue: string;
   lastvalue_raw: number;
   status: string;
@@ -408,14 +408,14 @@ export interface PRTGDataSourceConfig extends DataSourceJsonData {
   username?: string;
   hostname?: string;
   passhash?: string;
-  cacheTimeout?: number; 
+  cacheTimeout?: number;
   tzAutoAdjust?: boolean;
   metricsLimit?: number;
   oauth2?: {
     enabled: boolean;
     tokenUrl?: string;
   };
-  timeout?: number; 
+  timeout?: number;
 }
 
 
@@ -441,7 +441,7 @@ export interface MySecureJsonData {
  */
 export interface PRTGSecureJsonData {
   passhash?: string;
- 
+
 }
 
 /**
@@ -471,7 +471,7 @@ export interface IEditorModes {
  * Interface representing default scope configurations for metrics.
  * @interface
  */
-export interface IScopeDefaults {
+export interface ScopeDefaults {
   metric: {
     propertyList: Array<{
       name: string;
@@ -552,10 +552,10 @@ export interface PRTGApiConfig {
   baseUrl: string;
   username: string;
   passwordHash: string;
-  cacheTimeout: number;  
+  cacheTimeout: number;
   enableTimeZoneAdjust: boolean;
   useProxy?: boolean;
-  timeout?: number; 
+  timeout?: number;
 }
 
 /**
@@ -579,7 +579,7 @@ export interface PRTGSeries {
  */
 export interface PrtgValues {
   datetime: string;
-  [key: string]: string | number; 
+  [key: string]: string | number;
 }
 
 /**
@@ -598,8 +598,3 @@ export interface PRTGHistoricalResponse {
 export interface PRTGHistoricalData {
   histdata: PrtgValues[];
 }
-
-
-
-
-
