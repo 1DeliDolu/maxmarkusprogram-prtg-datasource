@@ -1,15 +1,16 @@
 {
     "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
     "type": "datasource",
-    "name": "Prtg",
+    "name": "PRTG",
     "id": "maxmarkusprogram-prtg-datasource",
     "metrics": true,
+    "annotations": true,
     "info": {
         "description": "PRTG Network Monitor data source",
         "author": {
             "name": "Maxmarkusprogram",
             "email": "mustafa.ozdemir1408@gmail.com",
-            "url": "https://github.com/1DeliDolu/prtg-grafana-datasource.git"
+            "url": "https://github.com/1DeliDolu/maxmarkusprogram-prtg-datasource.git"
         },
         "keywords": [
             "datasource,prtg"
@@ -18,7 +19,6 @@
             "small": "img/logo.svg",
             "large": "img/logo.svg"
         },
-        "annotations": true,
         "links": [
             {
                 "name": "GitHub",
@@ -42,13 +42,11 @@
         {
             "path": "hostname",
             "url": "https://{{ .JsonData.hostname }}/api/",
-            "body": [
-                {
-                    "username": "{{ .JsonData.username }}",
-                    "passhash": "{{ .SecureJsonData.passhash }}"
-                }
-            ]
+            "body": {
+                "username": "{{ .JsonData.username }}",
+                "passhash": "{{ .SecureJsonData.passhash }}"
+            }
         }
     ],
-    "buildMode": "development"
+    "buildMode": "production"
 }

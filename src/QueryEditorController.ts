@@ -409,7 +409,9 @@ export class QueryEditorController {
         if (!Array.isArray(list)) {
             return undefined;
         }
-        return [...new Set(list.map((item) => item.name))];
+        return list
+            .map(item => item.name)
+            .filter((name, index, array) => array.indexOf(name) === index);
     }
 
     public isRegex = isRegex;
