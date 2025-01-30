@@ -361,7 +361,6 @@ export interface DataSourceResponse {
  * Represents a metric find value that extends the Grafana metric find value interface.
  * @interface MetricFindValue
  * @extends {GrafanaMetricFindValue}
- * 
  * @property {string} text - The display text of the metric find value
  * @property {string} [value] - Optional value associated with the metric find value
  * @property {boolean} [expandable] - Optional flag indicating if the metric find value can be expanded
@@ -441,7 +440,6 @@ export interface MySecureJsonData {
  */
 export interface PRTGSecureJsonData {
   passhash?: string;
-
 }
 
 /**

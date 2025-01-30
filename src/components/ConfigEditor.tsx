@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { InlineField, Input } from '@grafana/ui';
+import { InlineField, Input,  SecretInput } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { PRTGDataSourceConfig, PRTGSecureJsonData } from '../types';
 
@@ -8,7 +8,8 @@ interface Props extends DataSourcePluginOptionsEditorProps<PRTGDataSourceConfig,
 export function ConfigEditor(props: Props) {
   const { onOptionsChange, options } = props;
   const { jsonData } = options;
-
+  const { secureJsonData, secureJsonFields } = options;
+  const { passhash } = secureJsonData || {};
 
   const onHostnameChange = (event: ChangeEvent<HTMLInputElement>) => {
     onOptionsChange({
@@ -33,13 +34,26 @@ export function ConfigEditor(props: Props) {
   const onPasshashChange = (event: ChangeEvent<HTMLInputElement>) => {
     onOptionsChange({
       ...options,
-      jsonData: {
-        ...jsonData,
+      secureJsonData: {
         passhash: event.target.value,
       },
     });
   };
+  console.log(options);
 
+  const onResetPasshash = () => {
+    onOptionsChange({
+      ...options,
+      secureJsonFields: {
+        ...options.secureJsonFields,
+        passhash: false,
+      },
+      secureJsonData: {
+        ...options.secureJsonData,
+        passhash: '',
+      },
+    });
+  };
 
   const onCacheTimeoutChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
@@ -74,13 +88,14 @@ export function ConfigEditor(props: Props) {
         />
       </InlineField>
       <InlineField label="Passhash" labelWidth={20} interactive tooltip={'Passhash for the API'}>
-        <Input
+        <SecretInput
           id="config-editor-passhash"
-          onChange={onPasshashChange}
-          value={jsonData.passhash}
+          isConfigured={Boolean(secureJsonFields?.passhash)}
+          value={passhash || ''}
           placeholder="Enter your passhash"
-          type='password'
           width={40}
+          onReset={onResetPasshash}
+          onChange={onPasshashChange}
         />
       </InlineField>
       <InlineField label="Cache Timeout" labelWidth={20} interactive tooltip={'Cache timeout in seconds'}>

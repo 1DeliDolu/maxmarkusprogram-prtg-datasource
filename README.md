@@ -123,3 +123,9 @@ Below you can find source code for existing app plugins and other related docume
 - [How to sign a plugin?](https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin)
 
 ## [Show please docs ordner for details](./docs/config/ConfigEditor.md)
+
+## For example for the panel
+
+![panel](./docs/query/image/QueryEditor/1737548334210.png)
+
+![panel](./docs/query/image/QueryEditor/1737448469409.png)

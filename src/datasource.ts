@@ -73,12 +73,13 @@ export class PRTGDataSource extends DataSourceApi<PRTGQuery, PRTGDataSourceConfi
     super(settings);
     this.baseUrl = `https://${instanceSettings.jsonData.hostname}/api/`;
     this.username = instanceSettings.jsonData.username || '';
-    this.passhash = instanceSettings.jsonData.passhash || '';
+    this.passhash = instanceSettings.secureJsonData?.passhash || '';
+    console.log('passhash:', this.passhash);
 
     const config: PRTGApiConfig = {
       baseUrl: `https://${instanceSettings.jsonData.hostname}/api/`,
       username: instanceSettings.jsonData.username || '',
-      passwordHash: instanceSettings.jsonData.passhash || '',
+      passwordHash: instanceSettings.secureJsonData?.passhash || '',
       cacheTimeout: this.parseTimeout(instanceSettings.jsonData.cacheTimeout, 300),
       enableTimeZoneAdjust: instanceSettings.jsonData.tzAutoAdjust || false,
       useProxy: true,
