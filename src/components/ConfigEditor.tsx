@@ -1,15 +1,13 @@
 import React, { ChangeEvent } from 'react';
-import { InlineField, Input,  SecretInput } from '@grafana/ui';
+import { InlineField, Input } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { PRTGDataSourceConfig, PRTGSecureJsonData } from '../types';
+import { PRTGDataSourceConfig } from '../types';
 
-interface Props extends DataSourcePluginOptionsEditorProps<PRTGDataSourceConfig, PRTGSecureJsonData> { }
+interface Props extends DataSourcePluginOptionsEditorProps<PRTGDataSourceConfig> { }
 
 export function ConfigEditor(props: Props) {
   const { onOptionsChange, options } = props;
   const { jsonData } = options;
-  const { secureJsonData, secureJsonFields } = options;
-  const { passhash } = secureJsonData || {};
 
   const onHostnameChange = (event: ChangeEvent<HTMLInputElement>) => {
     onOptionsChange({
@@ -32,25 +30,12 @@ export function ConfigEditor(props: Props) {
   };
 
   const onPasshashChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
     onOptionsChange({
       ...options,
-      secureJsonData: {
-        passhash: event.target.value,
-      },
-    });
-  };
-  console.log(options);
-
-  const onResetPasshash = () => {
-    onOptionsChange({
-      ...options,
-      secureJsonFields: {
-        ...options.secureJsonFields,
-        passhash: false,
-      },
-      secureJsonData: {
-        ...options.secureJsonData,
-        passhash: '',
+      jsonData: {
+        ...jsonData,
+        passhash: value,
       },
     });
   };
@@ -88,13 +73,12 @@ export function ConfigEditor(props: Props) {
         />
       </InlineField>
       <InlineField label="Passhash" labelWidth={20} interactive tooltip={'Passhash for the API'}>
-        <SecretInput
+        <Input
+        type='password'
           id="config-editor-passhash"
-          isConfigured={Boolean(secureJsonFields?.passhash)}
-          value={passhash || ''}
+          value={jsonData.passhash || ''}
           placeholder="Enter your passhash"
           width={40}
-          onReset={onResetPasshash}
           onChange={onPasshashChange}
         />
       </InlineField>

@@ -212,7 +212,6 @@ description below) to suit your needs.
 
 For more information on possible raw message status values returned by table-based API calls, see the Knowledge Base: [https://kb.paessler.com/en/topic/76501
 
-
 ](https://kb.paessler.com/en/topic/76501?utm_source=prtg&utm_medium=referral&utm_campaign=webgui-kb)
 
 # PRTG HTTP API: Table Query Builder
@@ -227,3 +226,56 @@ Please choose from the available contents for tables
 ![1738230173056](image/README/1738230173056.png)
 
 Read please [ PRTG Single Object Status](https://www.paessler.com/manuals/prtg/single_object_status) for details.
+
+
+### **1. Manually Installing the Plugin**
+
+Grafana allows you to use your own datasource plugins. However, you need to place your plugin in the correct  **Grafana plugin directory** .
+
+
+1. **Create the Plugin Directory:**
+
+   Locate the Grafana plugin directory (default locations):
+
+   * **Linux/macOS:** `/var/lib/grafana/plugins/`
+   * **Windows:** `C:\Program Files\GrafanaLabs\grafana\data\plugins\`
+
+### **2. Enable Plugin Loading in Grafana Settings**
+
+Some custom plugins require enabling their loading in the **grafana.ini** configuration file.
+
+* **Linux/macOS:**
+
+  Open the file located at:
+
+  `/etc/grafana/grafana.ini`
+* **Windows:**
+
+  Open the file located at:
+
+  `C:\Program Files\GrafanaLabs\grafana\conf\default.ini`
+
+#### **Add or modify the following line:**
+
+```ini
+[plugins]
+allow_loading_unsigned_plugins = maxmarkusprogram-prtg-datasource
+```
+
+If your plugin is  **not signed** , you need to allow Grafana to load unsigned plugins.
+
+---
+
+### **3. Restart Grafana**
+
+To apply the changes, restart the Grafana service:
+
+```sh
+systemctl restart grafana
+```
+
+or
+
+```sh
+sudo service grafana-server restart
+```
