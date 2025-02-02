@@ -1,63 +1,23 @@
-# PRTG Data Source Plugin for Grafana
+# Grafana Data Source Plugin for PRTG
 
 A Grafana data source plugin for integrating PRTG Network Monitor metrics into your Grafana dashboards.
 
-## Project Overview
+## What are Grafana data source plugins?
 
-This plugin enables seamless integration between PRTG Network Monitor and Grafana, allowing users to visualize and analyze PRTG sensor data using Grafana's powerful visualization and alerting capabilities.
+The **PRTG Network Monitor** is a versatile tool for network monitoring. IT teams can use it to monitor the performance and availability of their network components in real-time and identify issues early. With its wide range of features, PRTG Network Monitor enables IT administrators to efficiently manage their network infrastructure and ensure smooth operation.
 
-## Development
+A new data source is to be developed in a **Grafana plugin**, allowing data to be extracted from the **PRTG REST API** and displayed in dashboards using Grafana’s visualization options. The implementation will be carried out in **JavaScript (Node.js)** and **React** for the user interface to ensure a modern and high-performance integration.
 
-### Prerequisites
+To ensure the functionality of the plugin, it will undergo **comprehensive testing**. Without backend integration, **unit testing** will be conducted using **Jest**, while frontend functions and interactions within the Grafana environment will be tested with **Cypress**. This testing process ensures both data consistency and usability.
 
-- Node.js 16+
-- Grafana 10.0+
-- PRTG Network Monitor instance for testing
+The plugin will be developed to be compatible with the **latest version of Grafana (10+)**. Through seamless integration and simple configuration, users will be able to retrieve and visualize their **PRTG data** in just a few steps. A successful testing process not only confirms the technical functionality but also ensures a **positive user experience**.
 
-### Getting Started
+## Technical Details
 
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/1DeliDolu/maxmarkusprogram-prtg-datasource.git
-   ```
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-3. Build the plugin:
-
-   ```bash
-   npm run build
-   ```
-4. Start development server:
-
-   ```bash
-   npm run dev
-   ```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For bug reports and feature requests, please use the GitHub issues system.<!-- This README file is going to be the one displayed on the Grafana.com website for your plugin. Uncomment and replace the content here before publishing.
-
-Remove any remaining comments before publishing as these may be displayed on Grafana.com -->
-
-## Read please [docs ordner](../docs/config/ConfigEditor.md) for details and setting
+- Built with JavaScript (Node.js) and React
+- Compatible with Grafana 10+
+- Comprehensive testing using Jest for unit tests and Cypress for frontend integration tests
+- Easy configuration and data extraction from PRTG REST API
 
 ## API Calls for Historic Data
 
@@ -76,206 +36,31 @@ The following parameters can be used for the graphs and the data tables:
 | id                  | ID of the specific sensor                                                                               | integer value                     |
 | sdate               | Start of the time span (date and time)                                                                  | yyyy-mm-dd-hh-mm-ss               |
 | edate               | End of the time span (date and time)                                                                    | yyyy-mm-dd-hh-mm-ss               |
-| avg                 | Average interval in seconds; use 0 to download raw data (= results of all single monitoring requests)   | integer value                     |
+| avg                 | Average interval in seconds; use 0 to download raw data                                                 | integer value                     |
 | width/height        | Width and height of the graph in pixels                                                                 | integer value                     |
-| graphstyling        | baseFontSize='x' sets the size of the font, showLegend='x' enables (1) or disables (0) the graph legend | baseFontSize='x'%20showLegend='x' |
+| graphstyling        | baseFontSize and showLegend settings                                                                    | baseFontSize='x'%20showLegend='x' |
 
-## Getting One Single Property or Status of an Object
+## Object Properties and Status
 
-You can get properties/settings of an object (name,hostname, url) as well as status information of an object (lastvalue,
-downtime) using the following API calls:
-
-#### Get object property/setting (for propertyname look at the "name" of the INPUT fields while editing an object):
+### Getting Single Object Properties
+To get properties/settings or status information of an object, use:
 
 <pre><b>/api/getobjectproperty.htm</b>?id=objectid&name=propertyname&show=text</pre>
-
-#### Get object status (for columnname refer to the "Supported Output Columns" table below):
-
 <pre><b>/api/getobjectstatus.htm</b>?id=objectid&name=columnname&show=text</pre>
 
-The XML result looks like this:
+### Sensor Details
+Get sensor details in JSON or XML format:
 
-```
-    <?xml version="1.0" encoding="UTF-8" ?>
-    <prtg>
-        <version>25.1.102.1373+</version>
-        <result>True</result>
-    </prtg>
-```
+<pre><b>/api/getsensordetails.json</b>?id=sensorid</pre>
+<pre><b>/api/getsensordetails.xml</b>?id=sensorid</pre>
 
-#### Get details about a sensor in XML:
+## Multiple Object Properties
 
-<pre><b>/api/getsensordetails.xml</b>?id=sensorid </pre>
-
-#### Get details about a sensor in JSON:
-
-<pre><b>/api/getsensordetails.json</b>?id=sensorid </pre>
-
-The XML result looks like this:
-
-```
-    <?xml version="1.0" encoding="UTF-8"?>
-    <sensordata>
-        <prtg-version>25.1.102.1373+</prtg-version>
-        <name>
-            <![CDATA[Probe Health]]>
-        </name>
-        <sensortype>
-            <![CDATA[Probe]]>
-        </sensortype>
-        <interval>
-            <![CDATA[60 s]]>
-        </interval>
-        <probename>
-            <![CDATA[PRTG]]>
-        </probename>
-        <parentgroupname>
-            <![CDATA[PRTG]]>
-        </parentgroupname>
-        <parentdevicename>
-            <![CDATA[Probe.Device.]]>
-        </parentdevicename>
-        <parentdeviceid>
-            <![CDATA[40]]>
-        </parentdeviceid>
-        <lastvalue>
-            <![CDATA[99 %]]>
-        </lastvalue>
-        <lastmessage>
-            <![CDATA[OK]]>
-        </lastmessage>
-        <favorite>
-            <![CDATA[]]>
-        </favorite>
-        <statustext>
-            <![CDATA[Up]]>
-        </statustext>
-        <statusid>
-            <![CDATA[3]]>
-        </statusid>
-        <lastup>
-            <![CDATA[40511.5501967593[20 s ago]]]>
-        </lastup>
-        <lastdown>
-            <![CDATA[40511.5407662153[13 m 55 s ago]]]>
-        </lastdown>
-        <lastcheck>
-            <![CDATA[40511.5501967593[20 s ago]]]>
-        </lastcheck>
-        <uptime>
-            <![CDATA[99.9639%]]>
-        </uptime>
-        <uptimetime>
-            <![CDATA[283 d 14 h]]>
-        </uptimetime>
-        <downtime>
-            <![CDATA[0.0361%]]>
-        </downtime>
-        <downtimetime>
-            <![CDATA[2 h 27 m 31 s]]>
-        </downtimetime>
-        <updowntotal>
-            <![CDATA[283 d 16 h [=63% coverage]]]>
-        </updowntotal>
-        <updownsince>
-            <![CDATA[40059.3436475810[452 d 4 h ago]]]>
-        </updownsince>
-    </sensordata>
-
-```
-
-## Getting Property or Status of Multiple Objects
-
-Most data that you can request from the API is available in data tables in XML and CSV format (using XML format is recommended).
-
-The API function  **/api/table.xml **   is used to access data in tables. Here are some sample calls (URLs are shown without authentication parameters to improve readability):
-
-### A hierarchical list of all groups, devices, and sensors with their current state information:
+Use the table.xml API function to get data in tables:
 
 <pre><b>/api/table.xml</b>?content=sensortree</pre>
+<pre><b>/api/table.xml</b>?content=sensors&columns=objid,group,device,sensor,status,message</pre>
 
-**Note:** *sensortree* does not support JSON output.
+## License
 
-All sensors (with current status information):
-
-<pre><b>/api/table.xml</b>?content=sensors&columns=objid,group,device,sensor,status,message,lastvalue,priority,favorite</pre>
-
-All recent log entries:
-
-<pre><b>/api/table.xml</b>?content=messages&columns=objid,datetime,parent,type,name,status,message</pre>
-
-You will have the easiest start if you either use the table query builder below or click the
-icon that most tables with data have in the PRTG web interface. Simply navigate to the information that you want to use, click the XML icon, and you will be taken to a URL that renders the content of the table in XML format. You can now use the URL as it is or change various parameters (see parameter
-description below) to suit your needs.
-
-**Note:** URLs only show the XML URLs, please use API function /api/table.csv or the "output" parameter to select CSV format.
-
-For more information on possible raw message status values returned by table-based API calls, see the Knowledge Base: [https://kb.paessler.com/en/topic/76501
-
-](https://kb.paessler.com/en/topic/76501?utm_source=prtg&utm_medium=referral&utm_campaign=webgui-kb)
-
-# PRTG HTTP API: Table Query Builder
-
-You can use the following query builder tool to experiment with the API and to fine tune your queries. Please consult the
-information below for details:
-
-### Table Query Builder
-
-Please choose from the available contents for tables
-
-![1738230173056](image/README/1738230173056.png)
-
-Read please [ PRTG Single Object Status](https://www.paessler.com/manuals/prtg/single_object_status) for details.
-
-
-### **1. Manually Installing the Plugin**
-
-Grafana allows you to use your own datasource plugins. However, you need to place your plugin in the correct  **Grafana plugin directory** .
-
-
-1. **Create the Plugin Directory:**
-
-   Locate the Grafana plugin directory (default locations):
-
-   * **Linux/macOS:** `/var/lib/grafana/plugins/`
-   * **Windows:** `C:\Program Files\GrafanaLabs\grafana\data\plugins\`
-
-### **2. Enable Plugin Loading in Grafana Settings**
-
-Some custom plugins require enabling their loading in the **grafana.ini** configuration file.
-
-* **Linux/macOS:**
-
-  Open the file located at:
-
-  `/etc/grafana/grafana.ini`
-* **Windows:**
-
-  Open the file located at:
-
-  `C:\Program Files\GrafanaLabs\grafana\conf\default.ini`
-
-#### **Add or modify the following line:**
-
-```ini
-[plugins]
-allow_loading_unsigned_plugins = maxmarkusprogram-prtg-datasource
-```
-
-If your plugin is  **not signed** , you need to allow Grafana to load unsigned plugins.
-
----
-
-### **3. Restart Grafana**
-
-To apply the changes, restart the Grafana service:
-
-```sh
-systemctl restart grafana
-```
-
-or
-
-```sh
-sudo service grafana-server restart
-```
+This project is licensed under the Apache 2.0 License - see the LICENSE file for details.

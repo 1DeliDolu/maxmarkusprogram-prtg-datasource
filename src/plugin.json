@@ -9,10 +9,12 @@
     "description": "PRTG Network Monitor data source",
     "author": {
       "name": "Maxmarkusprogram",
-      "email": "mustafa.ozdemir1408@gmail.com", 
+      "email": "mustafa.ozdemir1408@gmail.com",
       "url": "https://github.com/1DeliDolu/maxmarkusprogram-prtg-datasource.git"
     },
-    "keywords": ["datasource,prtg"],
+    "keywords": [
+      "datasource,prtg"
+    ],
     "logos": {
       "small": "img/logo.svg",
       "large": "img/logo.svg"
@@ -44,6 +46,13 @@
         "username": "{{ .JsonData.username }}",
         "passhash": "{{ .SecureJsonData.passhash }}"
       }
+    }
+  ],
+  "includes": [
+    {
+      "name": "overview",
+      "path": "dashboards/overview.json",
+      "type": "dashboard"
     }
   ]
 }

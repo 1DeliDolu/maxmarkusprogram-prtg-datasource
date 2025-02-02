@@ -1,50 +1,66 @@
-<!-- This README file is going to be the one displayed on the Grafana.com website for your plugin. Uncomment and replace the content here before publishing.
+# Grafana Data Source Plugin for PRTG
 
-Remove any remaining comments before publishing as these may be displayed on Grafana.com -->
+A Grafana data source plugin for integrating PRTG Network Monitor metrics into your Grafana dashboards.
 
-# Prtg
+## What are Grafana data source plugins?
 
-<!-- To help maximize the impact of your README and improve usability for users, we propose the following loose structure:
+The **PRTG Network Monitor** is a versatile tool for network monitoring. IT teams can use it to monitor the performance and availability of their network components in real-time and identify issues early. With its wide range of features, PRTG Network Monitor enables IT administrators to efficiently manage their network infrastructure and ensure smooth operation.
 
-**BEFORE YOU BEGIN**
-- Ensure all links are absolute URLs so that they will work when the README is displayed within Grafana and Grafana.com
-- Be inspired ✨
-  - [grafana-polystat-panel](https://github.com/grafana/grafana-polystat-panel)
-  - [volkovlabs-variable-panel](https://github.com/volkovlabs/volkovlabs-variable-panel)
+A new data source is to be developed in a **Grafana plugin**, allowing data to be extracted from the **PRTG REST API** and displayed in dashboards using Grafana’s visualization options. The implementation will be carried out in **JavaScript (Node.js)** and **React** for the user interface to ensure a modern and high-performance integration.
 
-**ADD SOME BADGES**
+To ensure the functionality of the plugin, it will undergo **comprehensive testing**. Without backend integration, **unit testing** will be conducted using **Jest**, while frontend functions and interactions within the Grafana environment will be tested with **Cypress**. This testing process ensures both data consistency and usability.
 
-Badges convey useful information at a glance for users whether in the Catalog or viewing the source code. You can use the generator on [Shields.io](https://shields.io/badges/dynamic-json-badge) together with the Grafana.com API
-to create dynamic badges that update automatically when you publish a new version to the marketplace.
+The plugin will be developed to be compatible with the **latest version of Grafana (10+)**. Through seamless integration and simple configuration, users will be able to retrieve and visualize their **PRTG data** in just a few steps. A successful testing process not only confirms the technical functionality but also ensures a **positive user experience**.
 
-- For the URL parameter use `https://grafana.com/api/plugins/your-plugin-id`.
-- Example queries:
-  - Downloads: `$.downloads`
-  - Catalog Version: `$.version`
-  - Grafana Dependency: `$.grafanaDependency`
-  - Signature Type: `$.versionSignatureType`
-- Optionally, for the logo parameter use `grafana`.
+## Technical Details
 
-Full example: ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?logo=grafana&query=$.version&url=https://grafana.com/api/plugins/grafana-polystat-panel&label=Marketplace&prefix=v&color=F47A20)
+- Built with JavaScript (Node.js) and React
+- Compatible with Grafana 10+
+- Comprehensive testing using Jest for unit tests and Cypress for frontend integration tests
+- Easy configuration and data extraction from PRTG REST API
 
-Consider other [badges](https://shields.io/badges) as you feel appropriate for your project.
+## API Calls for Historic Data
 
-## Overview / Introduction
-Provide one or more paragraphs as an introduction to your plugin to help users understand why they should use it.
+The API calls for historic data tables look like this:
 
-Consider including screenshots:
-- in [plugin.json](https://grafana.com/developers/plugin-tools/reference/plugin-json#info) include them as relative links.
-- in the README ensure they are absolute URLs.
+### Historic data in JSON format:
 
-## Requirements
-List any requirements or dependencies they may need to run the plugin.
+<pre><b>/api/historicdata.json</b>?id=objectid&avg=0&sdate=2025-01-20-00-00-00&edate=2025-01-21-00-00-00&usecaption=1</pre>
 
-## Getting Started
-Provide a quick start on how to configure and use the plugin.
+# Common Parameters for Historic Data API Calls
 
-## Documentation
-If your project has dedicated documentation available for users, provide links here. For help in following Grafana's style recommendations for technical documentation, refer to our [Writer's Toolkit](https://grafana.com/docs/writers-toolkit/).
+The following parameters can be used for the graphs and the data tables:
 
-## Contributing
-Do you want folks to contribute to the plugin or provide feedback through specific means? If so, tell them how!
--->
+| **Parameter** | **Description**                                                                                   | **Possible values**         |
+| ------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| id                  | ID of the specific sensor                                                                               | integer value                     |
+| sdate               | Start of the time span (date and time)                                                                  | yyyy-mm-dd-hh-mm-ss               |
+| edate               | End of the time span (date and time)                                                                    | yyyy-mm-dd-hh-mm-ss               |
+| avg                 | Average interval in seconds; use 0 to download raw data                                                 | integer value                     |
+| width/height        | Width and height of the graph in pixels                                                                 | integer value                     |
+| graphstyling        | baseFontSize and showLegend settings                                                                    | baseFontSize='x'%20showLegend='x' |
+
+## Object Properties and Status
+
+### Getting Single Object Properties
+To get properties/settings or status information of an object, use:
+
+<pre><b>/api/getobjectproperty.htm</b>?id=objectid&name=propertyname&show=text</pre>
+<pre><b>/api/getobjectstatus.htm</b>?id=objectid&name=columnname&show=text</pre>
+
+### Sensor Details
+Get sensor details in JSON or XML format:
+
+<pre><b>/api/getsensordetails.json</b>?id=sensorid</pre>
+<pre><b>/api/getsensordetails.xml</b>?id=sensorid</pre>
+
+## Multiple Object Properties
+
+Use the table.xml API function to get data in tables:
+
+<pre><b>/api/table.xml</b>?content=sensortree</pre>
+<pre><b>/api/table.xml</b>?content=sensors&columns=objid,group,device,sensor,status,message</pre>
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the LICENSE file for details.

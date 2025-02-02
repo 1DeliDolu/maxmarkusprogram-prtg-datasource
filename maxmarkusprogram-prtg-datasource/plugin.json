@@ -22,7 +22,7 @@
         "links": [
             {
                 "name": "GitHub",
-                "url": "https://github.com/1DeliDolu/prtg-grafana-datasource"
+                "url": "https://github.com/1DeliDolu/maxmarkusprogram-prtg-datasource.git"
             }
         ],
         "screenshots": [
@@ -46,6 +46,13 @@
                 "username": "{{ .JsonData.username }}",
                 "passhash": "{{ .SecureJsonData.passhash }}"
             }
+        }
+    ],
+    "includes": [
+        {
+            "name": "overview",
+            "path": "dashboards/overview.json",
+            "type": "dashboard"
         }
     ],
     "buildMode": "production"

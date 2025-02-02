@@ -1,0 +1,41 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "private",
+  "signedByOrg": "maxmarkusprogram",
+  "signedByOrgName": "prtg",
+  "rootUrls": [
+    "https://prtgdelione.grafana.net/"
+  ],
+  "plugin": "maxmarkusprogram-prtg-datasource",
+  "version": "1.0.0",
+  "time": 1738498799511,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "CHANGELOG.md": "65b243d61e410b055ad3984a979fee25df47b24529bc2bcb35b8d95ca3dbd550",
+    "dashboards/overview.json": "80e352f14d9ead830d2603aae8818eaeb76d32658219d84cb176108f2d6bc838",
+    "image/README/1738230173056.png": "c5d6a3f8e7c78a0e95459d808c766b06d75f9f106423d1b8d2724cf293094a41",
+    "img/1737448469409.png": "ff2d60a4153ff791f2f68f38279f4372d05ebd318ca98d8ee15a05f1a6a8ba1f",
+    "img/configAnmelden.png": "d3f0144a2a58545b7d2cc0108b0a7fcbd3e43ca223d810f8b60a3fd14e901305",
+    "img/logo.svg": "1defc6f7e585c67657bcfd8fddc599ee7dfa82f8674413f49fa274c2cd453ec6",
+    "LICENSE": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+    "module.js": "baf1972985d8bdb936c3c84a38b181971ebc5ec03c7bf51cb962d236f44a711e",
+    "module.js.map": "6f0113ed6c995c0ee7ad8f69af738049cb1c03342a21b0c5ea49728c6d1bbc9b",
+    "plugin.json": "261105d748ddac1d93368d37e26824fb602fd696095be3105ea2ceb5093b195f",
+    "README.md": "5eab08aee8c9769c0dc39abacb3dddbabeabe5cf916d2c60b3c5a45ffc562cb7"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.11
+Comment: https://openpgpjs.org
+
+wrkEARMKAAYFAmefYu8AIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
+cIhm52laAgkAPh1qcGw+J6vasQYySqpX8iOhDeDxontV90CpwuzhRGeDjZ+5
+HLpSqMSMzBFr//ZbNRln7TRvbYIFl53jha30dlcCCQBKvlvuS8D/M7OxTWeY
+NNn5BnrskqFjHwvmUeXAIH43AQx4oTqAh0G64LBAXJHHEuCCwa6WyYgselCj
+JpESkJUUAg==
+=018D
+-----END PGP SIGNATURE-----
