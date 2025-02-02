@@ -429,8 +429,7 @@ export interface PRTGDataSourceConfig extends DataSourceJsonData {
 export interface MySecureJsonData {
   apiKey?: string;
   passhash?: string;
-  clientId?: string;
-  clientSecret?: string;
+ 
 }
 
 
